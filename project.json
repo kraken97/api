@@ -93,7 +93,7 @@
 
   "scripts": {
     
-    "postrestore": ["dotnet ef database update"],
+    "postrestore": ["dotnet ef migrations add initial","dotnet ef database update"],
     "prepublish": [ "bower install", "dotnet bundle" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
