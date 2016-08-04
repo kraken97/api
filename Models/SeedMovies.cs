@@ -1,10 +1,10 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using WebApplication16.Models;
 using System.Linq;
+using Task1.Models;
 
-namespace WebApplication16
+namespace Task1
 {
 
 

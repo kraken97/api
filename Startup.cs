@@ -10,10 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebApplication16.Models;
+using Task1.Models;
 
 
-namespace WebApplication16
+namespace Task1
 {
     public class Startup
     {

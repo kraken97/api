@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebApplication16.Models;
+using Task1.Models;
 
-namespace WebApplication16.Controllers
+namespace Task1.Controllers
 {
     public class MoviesController : Controller
     {
