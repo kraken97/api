@@ -22,10 +22,16 @@ namespace WebApplication16.Controllers
         }
 
         // GET: RelatedPages
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string prop = "id", bool order = true, int take = 10, int skip = 0)
         {
-            var sqliteContext = _context.RelatedPages.Include(r => r.Page1).Include(r => r.Page2);
-            return View(await sqliteContext.ToListAsync());
+
+               ViewBag.Order = !order;
+            var query = _context.RelatedPages.Include(n => n.Page1).Include(n => n.Page2);
+            ViewBag.Count = query.Count();
+            var res = Utils.Sort<RelatedPages>(query, Utils.GetKeyForRelPages(prop), order)
+                               .TakeSkip(take, skip).ToList();
+            
+            return View(res);
         }
 
         // GET: RelatedPages/Details/5

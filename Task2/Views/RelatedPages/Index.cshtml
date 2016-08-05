@@ -1,4 +1,4 @@
-@model List<WebApplication16.Models.RelatedPages>
+@model IEnumerable<WebApplication16.Models.RelatedPages>
 
 @{
     ViewData["Title"] = "Index";
@@ -15,9 +15,9 @@
         <tr>
             <th>
                 @{
-                    var id=@Html.DisplayNameFor(model => model[0].ID);
-                    var page1=  @Html.DisplayNameFor(model => model[0].Page1);
-                    var  page2 =@Html.DisplayNameFor(model => model[0].Page2);
+                    var id=@Html.DisplayNameFor(model => model.ID);
+                    var page1=  @Html.DisplayNameFor(model => model.Page1);
+                    var  page2 =@Html.DisplayNameFor(model => model.Page2);
         
                 }
                 <a  href="/RelatedPages/Index?order=@(ViewBag.Order)&prop=@id">@id</a>
@@ -25,10 +25,12 @@
             <th>
                 <a  href="/RelatedPages/Index?order=@(ViewBag.Order)&prop=@page1">@page1</a>
                 </th>
+                <th> @Html.DisplayNameFor(model => model.Page1.UrlName)</th>
         
             <th>
                 <a  href="/RelatedPages/Index?order=@(ViewBag.Order)&prop=@page2">@page2</a>
             </th>
+            <th> @Html.DisplayNameFor(model => model.Page2.UrlName)</th>
             <th></th>
         </tr>
     </thead>
@@ -36,12 +38,18 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ID)
+                @item.ID
             </td>
             <td>
+                @item.Page1Id 
+            </td>
+             <td>
                 @Html.DisplayFor(modelItem => item.Page1.UrlName)
             </td>
       
+            <td>
+                  @item.Page2Id
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Page2.UrlName)
             </td>
@@ -57,3 +65,9 @@
   
     </tbody>
 </table>
+<ul class="pagination">
+           @for(int i =0;i<=ViewBag.Count/10;i++){
+            <li><a  href="/RelatedPages/Index?take=10&skip=@(i*10)">@(i+1)</a></li>
+        }
+
+      </ul>

@@ -11,7 +11,7 @@ namespace WebApplication16.Models
     {
         public int NavLinkId { get; set; }
         [Required]
-        [MaxLength(500)]
+        [MaxLength(50)]
         public string Title { get; set; }
 
         public int? ParentLinkID { get; set; }

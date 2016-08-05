@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication16.Models
 {
@@ -14,11 +14,12 @@ namespace WebApplication16.Models
         public int PageId { get; set; }
         [Required]
         [Url]
-        [MaxLength(500)]
-        [Unique]
+        [MaxLength(100)]
+        [Remote("Unique", "Pages", ErrorMessage = "UrlName must be unique")]
         public string UrlName { get; set; }
+        [MaxLength(50)]
         public string Title { get; set; }
-        [MaxLength(1000)]
+        [MaxLength(200)]
         public string Description { get; set; }
         [Required]
         

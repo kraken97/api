@@ -18,15 +18,15 @@
           
             <tr>
                 <td>UrlName</td>
-                <td> <input type="text" name="url"></td>
+                <td> <input type="text" name="url" class="form-control"></td>
             </tr>
             <tr>
                 <td>Title</td>
-                <td> <input type="text" name="title"></td>
+                <td> <input type="text" name="title" class="form-control"></td>
             </tr>
             <tr>
                 <td>
-                            <input type="submit" value="Filter" />
+                            <input type="submit" value="Filter" class="btn btn-default" />
                     </td>
             </tr>
         </table>
@@ -64,17 +64,17 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.AddedDate)
+                @item.AddedDate
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @item.Title
             </td>
       
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @item.Description
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UrlName)
+                @item.UrlName
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.PageId">Edit</a> |

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebApplication16;
 using WebApplication16.Models;
 
 
@@ -42,7 +43,8 @@ namespace Task1
        
             services.AddMvc();
             services.AddLogging();
-
+            services.AddSingleton<IPageRepository,PageRepository>();
+               services.AddSingleton<INavRepository,NavLinksRepository>();
 
            services.AddDbContext<SqliteContext>(options =>
             options.UseSqlite($"Data Source={Directory.GetCurrentDirectory()}/movie.db"));

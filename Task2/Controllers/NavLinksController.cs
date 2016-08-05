@@ -11,22 +11,22 @@ namespace WebApplication16.Controllers
 {
     public class NavLinksController : Controller
     {
-        private readonly SqliteContext _context;
+        private readonly INavRepository _repo;
 
-        public NavLinksController(SqliteContext context)
+        public NavLinksController(INavRepository repo)
         {
-            _context = context;    
+            _repo=repo;
         }
 
         // GET: NavLinks
         public async Task<IActionResult> Index(string prop = "id", bool order = true, int take = 10, int skip = 0)
         {
 
-            ViewBag.Order=!order;
-            var query = _context.NavLinks.Include(n => n.Page).Include(n => n.ParentLink);
-            ViewBag.Count=query.Count();
-             var res=Utils.Sort<NavLink>(query,Utils.GetKeyForNavLink(prop.ToLower()),order)
-                                .TakeSkip(take,skip).ToList();
+            ViewBag.Order = !order;
+            var query = _repo.GetAll();
+            ViewBag.Count = query.Count();
+            var res = Utils.Sort<NavLink>(query, Utils.GetKeyForNavLink(prop.ToLower()), order)
+                               .TakeSkip(take, skip).ToList();
             return View(res);
         }
 
@@ -38,7 +38,7 @@ namespace WebApplication16.Controllers
                 return NotFound();
             }
 
-            var navLink = await _context.NavLinks.SingleOrDefaultAsync(m => m.NavLinkId == id);
+            var navLink = _repo.Get(id.Value);
             if (navLink == null)
             {
                 return NotFound();
@@ -50,8 +50,9 @@ namespace WebApplication16.Controllers
         // GET: NavLinks/Create
         public IActionResult Create()
         {
-            ViewData["PageId"] = new SelectList(_context.Pages, "PageId", "Content");
-            ViewData["ParentLinks"] =_context.NavLinks.Select(p=>p.NavLinkId);
+            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId");
+
+            ViewData["ParentLinks"] =  new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId");
             return View();
         }
 
@@ -60,16 +61,16 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NavLinkId,PageId,ParentLinkID,Position,Title")] NavLink navLink)
+        public async Task<IActionResult> Create([Bind("NavLinkId,PageId,NavLinkId,Position,Title")] NavLink navLink)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(navLink);
-                await _context.SaveChangesAsync();
+                _repo.Add(navLink);
+        
                 return RedirectToAction("Index");
             }
-            ViewData["PageId"] = new SelectList(_context.Pages, "PageId", "PageId", navLink.PageId);
-            ViewData["ParentLinks"] =_context.NavLinks.Select(p=>p.NavLinkId);
+            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId", navLink.PageId);
+            ViewData["ParentLinks"] =   new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId",navLink.NavLinkId);
             return View(navLink);
         }
 
@@ -81,13 +82,13 @@ namespace WebApplication16.Controllers
                 return NotFound();
             }
 
-            var navLink = await _context.NavLinks.SingleOrDefaultAsync(m => m.NavLinkId == id);
+            var navLink = _repo.Get(id.Value);
             if (navLink == null)
             {
                 return NotFound();
             }
-            ViewData["PageId"] = new SelectList(_context.Pages, "PageId", "PageId", navLink.PageId);
-            ViewData["ParentLinks"] =_context.NavLinks.Select(p=>p.NavLinkId);
+            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId", navLink.PageId);
+                     ViewData["ParentLinks"]  =  new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId",navLink.NavLinkId);
             return View(navLink);
         }
 
@@ -96,7 +97,7 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("NavLinkId,PageId,ParentLinkID,Position,Title")] NavLink navLink)
+        public async Task<IActionResult> Edit(int id, [Bind("NavLinkId,PageId,NavLinkId,Position,Title")] NavLink navLink)
         {
             if (id != navLink.NavLinkId)
             {
@@ -107,8 +108,8 @@ namespace WebApplication16.Controllers
             {
                 try
                 {
-                    _context.Update(navLink);
-                    await _context.SaveChangesAsync();
+                    _repo.Update(navLink);
+                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +124,8 @@ namespace WebApplication16.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["PageId"] = new SelectList(_context.Pages, "PageId", "PageId", navLink.PageId);
-            ViewData["ParentLinks"] =_context.NavLinks.Select(p=>p.NavLinkId);
+            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId", navLink.PageId);
+                     ViewData["ParentLinks"] =   new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId",navLink.NavLinkId);
             return View(navLink);
         }
 
@@ -136,7 +137,7 @@ namespace WebApplication16.Controllers
                 return NotFound();
             }
 
-            var navLink = await _context.NavLinks.SingleOrDefaultAsync(m => m.NavLinkId == id);
+            var navLink = _repo.Get(id.Value);
             if (navLink == null)
             {
                 return NotFound();
@@ -150,15 +151,15 @@ namespace WebApplication16.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var navLink = await _context.NavLinks.SingleOrDefaultAsync(m => m.NavLinkId == id);
-            _context.NavLinks.Remove(navLink);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+           _repo.Remove(id);
+           return RedirectToAction("Index");
         }
 
         private bool NavLinkExists(int id)
         {
-            return _context.NavLinks.Any(e => e.NavLinkId == id);
+            return _repo.GetAll().Any(e => e.NavLinkId == id);
         }
+
+       
     }
 }

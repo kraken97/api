@@ -14,12 +14,13 @@ namespace WebApplication16.Controllers
     public class PagesController : Controller
     {
         private readonly ILogger<PagesController> _logger;
-        private readonly SqliteContext _context;
+        private readonly IPageRepository _repo;
 
-        public PagesController(SqliteContext context, ILogger<PagesController> logger)
+        public PagesController(IPageRepository repo, ILogger<PagesController> logger)
         {
+            _repo=repo;
             _logger = logger;
-            _context = context;
+  
         }
 
         // GET: Pages
@@ -30,7 +31,7 @@ namespace WebApplication16.Controllers
             _logger.LogInformation("index:" + ViewBag.Order as String);
            
             
-            IQueryable<Page> query=_context.Pages;
+            IEnumerable<Page> query=_repo.GetAll();
 
             if (url != null)
             {
@@ -58,7 +59,7 @@ namespace WebApplication16.Controllers
                 return NotFound();
             }
 
-            var page = await _context.Pages.SingleOrDefaultAsync(m => m.PageId == id);
+            var page = _repo.Get(id.Value);
             if (page == null)
             {
                 return NotFound();
@@ -78,26 +79,25 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PageId,Title,AddedDate,Content,Description,UrlName")] Page page)
+        public IActionResult Create([Bind("PageId,Title,AddedDate,Content,Description,UrlName")] Page page)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(page);
-                await _context.SaveChangesAsync();
+                _repo.Add(page);
                 return RedirectToAction("Index");
             }
             return View(page);
         }
 
         // GET: Pages/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var page = await _context.Pages.SingleOrDefaultAsync(m => m.PageId == id);
+            var page = _repo.Get(id.Value);
             if (page == null)
             {
                 return NotFound();
@@ -110,7 +110,7 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PageId,AddedDate,Content,Description,UrlName")] Page page)
+        public IActionResult Edit(int id, [Bind("PageId,AddedDate,Content,Description,UrlName")] Page page)
         {
             if (id != page.PageId)
             {
@@ -121,8 +121,8 @@ namespace WebApplication16.Controllers
             {
                 try
                 {
-                    _context.Update(page);
-                    await _context.SaveChangesAsync();
+                    _repo.Update(page);
+                
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -141,14 +141,14 @@ namespace WebApplication16.Controllers
         }
 
         // GET: Pages/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var page = await _context.Pages.SingleOrDefaultAsync(m => m.PageId == id);
+            var page = _repo.Get(id.Value);
             if (page == null)
             {
                 return NotFound();
@@ -160,17 +160,28 @@ namespace WebApplication16.Controllers
         // POST: Pages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var page = await _context.Pages.SingleOrDefaultAsync(m => m.PageId == id);
-            _context.Pages.Remove(page);
-            await _context.SaveChangesAsync();
+            var page =_repo.Get(id);
+            _repo.Remove(page);
             return RedirectToAction("Index");
         }
 
         private bool PageExists(int id)
         {
-            return _context.Pages.Any(e => e.PageId == id);
+            return _repo.Get(id)!=null;
+        }
+
+         [AcceptVerbs("Get", "Post")]
+        public IActionResult Unique(string UrlName)
+        {
+         _logger.LogInformation("Validation Uniquness for url "+UrlName);
+            var res = _repo.GetAll().Any(p=>p.UrlName.Equals(UrlName));
+            if(res){
+                return Json(data:false);
+            }
+
+            return Json(data: true);
         }
     }
 }

@@ -17,16 +17,11 @@
                 <select asp-for="PageId" class ="form-control" asp-items="ViewBag.PageId"></select>
             </div>
         </div>
-        <div class="form-group">
+          <div class="form-group">
             <label asp-for="ParentLinkID" class="col-md-2 control-label"></label>
-            <label><input asp-for="ParentLinkID" type="radio" name="pageid2" value="null">null</label>
-
-             @foreach(var item in  ViewBag.ParentLinks){
-
-                      <div class="radio">
-                    <label><input asp-for="ParentLinkID" type="radio" name="pageid2" value="@item">@item</label>
-                    </div>
-                }
+            <div class="col-md-10">
+                <select asp-for="ParentLinkID" class ="form-control" asp-items="ViewBag.ParentLinks"></select>
+            </div>
         </div>
         <div class="form-group">
             <label asp-for="Position" class="col-md-2 control-label"></label>

@@ -6,24 +6,45 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication16
 {
-    public  static class  Utils
+    public static class Utils
     {
-        public static ModelView<T> CreateViewFor<T>(IEnumerable<T>  data) where T : class
+   
+
+        public static IEnumerable<T> TakeSkip<T>(this IEnumerable<T> sortedData, int take, int skip)
         {
-            int count=data.Count();
-            return new ModelView<T>() { Count = count, Items = data.ToList() };
-
-        }
-
-        public static IEnumerable<T> TakeSkip<T>(this IEnumerable<T> sortedData,int take,int skip){
             return sortedData.Skip(skip).Take(take);
         }
-        public static IEnumerable<T> Sort<T>(this IEnumerable<T> model,Func<T,dynamic> key,bool order)where T:class{
-            return order?model.OrderBy(key):model.OrderByDescending(key);
+        public static IEnumerable<T> Sort<T>(this IEnumerable<T> model, Func<T, dynamic> key, bool order) where T : class
+        {
+            return order ? model.OrderBy(key) : model.OrderByDescending(key);
 
         }
-        public static Func<NavLink,dynamic> GetKeyForNavLink(string prop){
-                Func<NavLink, dynamic> key;
+        public static Func<RelatedPages, dynamic> GetKeyForRelPages(string prop)
+        {
+            Func<RelatedPages, dynamic> key;
+            switch (prop.ToLower())
+            {
+                case "id":
+                    key = (p) => p.ID;
+                    break;
+                case "page1":
+                    key = (p) => p.Page1Id;
+                    break;
+                case "page2":
+                    key = (p) => p.Page2Id;
+                    break;
+                 default:
+                    key = (p) => p.ID;
+                    break;
+
+            }
+            return key;
+
+        }
+
+        public static Func<NavLink, dynamic> GetKeyForNavLink(string prop)
+        {
+            Func<NavLink, dynamic> key;
 
             switch (prop)
             {
@@ -70,7 +91,7 @@ namespace WebApplication16
                     key = (p) => p.Description;
                     break;
                 case "addedDate":
-                    key = (p) => new {p.AddedDate.Year,p.AddedDate.Month,p.AddedDate.Day};
+                    key = (p) => new { p.AddedDate.Year, p.AddedDate.Month, p.AddedDate.Day };
                     break;
                 default:
                     key = (p) => p.PageId.ToString();
@@ -80,11 +101,4 @@ namespace WebApplication16
         }
     }
 
-
-
-    public class ModelView<T>
-    {
-        public int Count { get; set; }
-        public List<T> Items { get; set; }
-    }
 }
