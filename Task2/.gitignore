@@ -1,0 +1,8 @@
+.vscode
+bin
+obj
+Migrations
+*.db
+*.lock
+*.xproj
+*.user
