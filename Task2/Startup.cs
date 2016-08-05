@@ -40,15 +40,15 @@ namespace Task1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-       
+
             services.AddMvc();
             services.AddLogging();
-            services.AddSingleton<IPageRepository,PageRepository>();
-               services.AddSingleton<INavRepository,NavLinksRepository>();
+            services.AddScoped<IPageRepository, PageRepository>();
+            services.AddScoped<INavRepository, NavLinksRepository>();
 
-           services.AddDbContext<SqliteContext>(options =>
-            options.UseSqlite($"Data Source={Directory.GetCurrentDirectory()}/movie.db"));
-            
+            services.AddDbContext<SqliteContext>(options =>
+             options.UseSqlite($"Data Source={Directory.GetCurrentDirectory()}/movie.db"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +74,9 @@ namespace Task1
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+   name: "View",
+   template: "View/{UrlName}");
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Pages}/{action=Index}/{id?}");

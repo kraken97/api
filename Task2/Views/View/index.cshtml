@@ -1,0 +1,24 @@
+@{
+    Layout="_Pages";
+}
+
+@using WebApplication16.Models
+@model Page
+
+
+<div id="content">
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+        console.log()
+         $('#content').html("@Model.Content");
+        $('#content').html($('#content').text());
+        })
+
+        </script>
+}
