@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using WebApplication16.Models;
+using Task2.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication16{
+namespace Task2{
    public interface IPageRepository{
          void Add(Page page);
         IEnumerable<Page> GetAll();

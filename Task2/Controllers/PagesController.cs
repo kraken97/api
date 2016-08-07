@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebApplication16.Models;
-using WebApplication16;
+using Task2.Models;
+using Task2;
 
-namespace WebApplication16.Controllers
+namespace Task2.Controllers
 {
     public class PagesController : Controller
     {

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WebApplication16.Models;
+using Task2.Models;
 
-namespace WebApplication16.Controllers
+namespace Task2.Controllers
 {
     public class NavLinksController : Controller
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WebApplication16.Models;
+using Task2.Models;
 
-namespace WebApplication16.Models
+namespace Task2.Models
 {
     public class SqliteContext : DbContext
     {

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebApplication16;
-using WebApplication16.Models;
+using Task2;
+using Task2.Models;
 
 
 namespace Task1

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using WebApplication16.Models;
+using Task2.Models;
 using System.Linq;
 using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication16
+namespace Task2
 {
     public static class Utils
     {
