@@ -14,8 +14,10 @@ namespace Task2.Controllers
         private readonly INavRepository _repo;
         private readonly IPageRepository _prepo;
 
+        
         public NavLinksController(INavRepository repo,IPageRepository prepo)
         {
+        
             _prepo=prepo;
             _repo=repo;
         }
@@ -27,8 +29,8 @@ namespace Task2.Controllers
             ViewBag.Order = !order;
             var query = _repo.GetAll();
             ViewBag.Count = query.Count();
-            var res = Utils.Sort<NavLink>(query, Utils.GetKeyForNavLink(prop.ToLower()), order)
-                               .TakeSkip(take, skip).ToList();
+            var res = await Task<dynamic>.Run(()=>Utils.Sort<NavLink>(query, Utils.GetKeyForNavLink(prop.ToLower()), order)
+                               .TakeSkip(take, skip).ToList());
             return View(res);
         }
 
@@ -40,7 +42,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var navLink = _repo.Get(id.Value);
+            var navLink = await Task<NavLink>.Run(()=>_repo.Get(id.Value));
             if (navLink == null)
             {
                 return NotFound();
@@ -67,7 +69,7 @@ namespace Task2.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repo.Add(navLink);
+               await Task.Run(()=> _repo.Add(navLink));
         
                 return RedirectToAction("Index");
             }
@@ -84,7 +86,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var navLink = _repo.Get(id.Value);
+            var navLink = await Task<NavLink>.Run(()=>_repo.Get(id.Value));
             if (navLink == null)
             {
                 return NotFound();
@@ -110,7 +112,7 @@ namespace Task2.Controllers
             {
                 try
                 {
-                    _repo.Update(navLink);
+                    await Task.Run(()=>_repo.Update(navLink));
                    
                 }
                 catch (DbUpdateConcurrencyException)
@@ -143,7 +145,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var navLink = _repo.Get(id.Value);
+            var navLink = await Task<NavLink>.Run(()=>_repo.Get(id.Value));
             if (navLink == null)
             {
                 return NotFound();
@@ -157,7 +159,7 @@ namespace Task2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-           _repo.Remove(id);
+           await Task.Run(()=>_repo.Remove(id));
            return RedirectToAction("Index");
         }
 

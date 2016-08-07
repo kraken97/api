@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Task2;
-using System.Linq;
 using Task2.Models;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -22,11 +21,13 @@ namespace Task2.Controllers
 
 
         [HttpGet("{urlName}")]
-        public IActionResult Index(string urlName)
+        public async Task<IActionResult> Index(string urlName)
         {
-           Page page = _repo.GetAll().SingleOrDefault(r=>r.UrlName.Equals(urlName));
+           Page page =  await Task<Page>.Run(()=>_repo.GetAll().SingleOrDefault(r=>r.UrlName.Equals(urlName)));
 
-
+           if(page==null){
+               return  this.NotFound("file not found");
+           }
             return View(page);
         }
     }

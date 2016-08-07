@@ -40,6 +40,16 @@ textarea {
 {
     width: 100%;
 }
+/*
+thead{
+    background-color: lightslategrey;
+}
+
+tr:nth-child(even){
+    background: dimgrey;
+}*/
+
+
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
@@ -48,3 +58,5 @@ textarea {
     display: none
   }
 }
+
+

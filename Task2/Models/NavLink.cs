@@ -14,6 +14,7 @@ namespace Task2.Models
         [MaxLength(50)]
         public string Title { get; set; }
 
+        
         public int? ParentLinkID { get; set; }
         public int? PageId { get; set; }
         [ForeignKey("PageId")]

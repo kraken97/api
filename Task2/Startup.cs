@@ -66,7 +66,7 @@ namespace Task1
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Index/Error");
             }
 
             app.UseStaticFiles();
@@ -76,13 +76,10 @@ namespace Task1
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-   name: "View",
-   template: "View/{UrlName}");
-                routes.MapRoute(
                     name: "default",
                     template: "{controller=Pages}/{action=Index}/{id?}");
             });
-            //SeedData.Initialize(app.ApplicationServices);
+            SeedData.Initialize(app.ApplicationServices);
         }
     }
 }

@@ -18,6 +18,9 @@ namespace Task2.Models
         {
             mb.Entity<Page>().Property(e => e.AddedDate).HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')").ValueGeneratedOnAdd();
                mb.Entity<RelatedPages>().HasIndex(r => new { r.Page1Id, r.Page2Id }).IsUnique();
+               mb.Entity<RelatedPages>().HasIndex(r => new {  r.Page2Id,r.Page1Id }).IsUnique();
+               mb.Entity<NavLink>().HasIndex(r=>r.Position).IsUnique();
+            
 
         }
 

@@ -7,25 +7,22 @@
 }
 
 
-<h2>Index</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<form asp-controller="Pages" asp-action="Index" method="get">
-    <p>
+<div class="well">
+    <div class="container-fluid">
+<form asp-controller="Pages" asp-action="Index" method="get" style="display:inline">
+    
 
         <table>
           
-            <tr>
+            <tr style="display:inline">
                 <td>UrlName</td>
                 <td> <input type="text" name="url" class="form-control"></td>
             </tr>
-            <tr>
+            <tr style="display:inline">
                 <td>Title</td>
                 <td> <input type="text" name="title" class="form-control"></td>
             </tr>
-            <tr>
+            <tr style="display:inline">
                 <td>
                             <input type="submit" value="Filter" class="btn btn-default" />
                     </td>
@@ -33,8 +30,19 @@
         </table>
        
 
-    </p>
 </form>
+
+ 
+    </div>
+</div>
+<div class="create" style="float:right;display:inline">
+     <button class="btn-default btn">
+         
+    <a asp-action="Create">Create New</a>
+
+     </button>
+ </div>
+
 <table class="table">
        @{
                     var id=@Html.DisplayNameFor(model => model[0].PageId);
@@ -87,7 +95,8 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.PageId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PageId">Details</a> |
+                     <!--dont sure what   i should to do use details or js link to page -->
+                <a href="/View/@item.UrlName">View</a> | |
                 <a asp-action="Delete" asp-route-id="@item.PageId">Delete</a>
             </td>
         </tr>

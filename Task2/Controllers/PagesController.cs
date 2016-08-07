@@ -59,7 +59,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var page = _repo.Get(id.Value);
+            var page = await Task<Page>.Run(()=>_repo.Get(id.Value));
             if (page == null)
             {
                 return NotFound();
