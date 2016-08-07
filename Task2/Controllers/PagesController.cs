@@ -24,7 +24,7 @@ namespace Task2.Controllers
         }
 
         // GET: Pages
-        public IActionResult Index(string url, string title, string prop = "id", bool order = true, int take = 10, int skip = 0)
+        public IActionResult Index(string url, string title, string prop = "id", bool order = true, int take = 5, int skip = 0)
         {
             ViewBag.Order = !order;
 

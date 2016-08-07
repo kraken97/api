@@ -1,14 +1,16 @@
 @using Task2;
 @using Task2.Models;
+@using System;
 @model List<Page>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-
-<div class="well">
+<hr>
+   
     <div class="container-fluid">
+        <div class="col-md-9">
 <form asp-controller="Pages" asp-action="Index" method="get" style="display:inline">
     
 
@@ -34,16 +36,18 @@
 
  
     </div>
-</div>
-<div class="create" style="float:right;display:inline">
+      <div class="create col-md-3" >
      <button class="btn-default btn">
          
     <a asp-action="Create">Create New</a>
 
      </button>
  </div>
+</div>
+<hr>
 
-<table class="table">
+
+<table class="table table-bordered table-condensed table-striped">
        @{
                     var id=@Html.DisplayNameFor(model => model[0].PageId);
                     var added=@Html.DisplayNameFor(model => model[0].AddedDate);
@@ -108,8 +112,8 @@
 
 
       <ul class="pagination">
-           @for(int i =0;i<=ViewBag.Count/10;i++){
-            <li><a  href="/Pages/Index?take=10&skip=@(i*10)">@(i+1)</a></li>
+           @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/5);i++){
+            <li><a  href="/Pages/Index?take=5&skip=@(i*5)">@(i+1)</a></li>
         }
 
       </ul>

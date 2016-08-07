@@ -1,3 +1,4 @@
+@using System;
 @model IEnumerable<Task2.Models.RelatedPages>
 
 @{
@@ -10,7 +11,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<table class="table">
+<table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
             <th>
@@ -67,8 +68,8 @@
     </tbody>
 </table>
 <ul class="pagination">
-           @for(int i =0;i<=ViewBag.Count/10;i++){
-            <li><a  href="/RelatedPages/Index?take=10&skip=@(i*10)">@(i+1)</a></li>
+           @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/10);i++){
+            <li><a  href="/RelatedPages/Index?take=5&skip=@(i*5)">@(i+1)</a></li>
         }
 
       </ul>

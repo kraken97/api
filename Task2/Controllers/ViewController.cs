@@ -16,7 +16,9 @@ namespace Task2.Controllers
 
         private readonly IPageRepository _repo;
       public ViewController(IPageRepository repo){
+        
             this._repo=repo;
+
       }
 
 

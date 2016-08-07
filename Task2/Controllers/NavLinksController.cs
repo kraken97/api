@@ -23,7 +23,7 @@ namespace Task2.Controllers
         }
 
         // GET: NavLinks
-        public async Task<IActionResult> Index(string prop = "id", bool order = true, int take = 10, int skip = 0)
+        public async Task<IActionResult> Index(string prop = "id", bool order = true, int take = 5, int skip = 0)
         {
 
             ViewBag.Order = !order;

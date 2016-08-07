@@ -1,3 +1,4 @@
+@using System;
 @model IEnumerable<Task2.Models.NavLink>
 
 @{
@@ -9,7 +10,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
             @{
@@ -43,6 +44,7 @@
                  <a  href="/NavLinks/Index?order=@(ViewBag.Order)&prop=@pageid">@pageid</a>
 
             </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -77,8 +79,8 @@
 </table>
 
  <ul class="pagination">
-           @for(int i =0;i<=ViewBag.Count/10;i++){
-            <li><a  href="/NavLinks/Index?take=10&skip=@(i*10)">@(i+1)</a></li>
+           @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/10);i++){
+            <li><a  href="/NavLinks/Index?take=5&skip=@(i*5)">@(i+1)</a></li>
         }
 
       </ul>
