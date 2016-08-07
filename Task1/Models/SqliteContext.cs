@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication16.Models
+namespace Task1.Models
 {
     public class SqliteContext : DbContext
     {
