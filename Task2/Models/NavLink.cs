@@ -15,8 +15,6 @@ namespace WebApplication16.Models
         public string Title { get; set; }
 
         public int? ParentLinkID { get; set; }
-        [ForeignKey("ParentLinkID")]
-        public NavLink ParentLink { get; set; }
         public int? PageId { get; set; }
         [ForeignKey("PageId")]
         public Page Page { get; set; }

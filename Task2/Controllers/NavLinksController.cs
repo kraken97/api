@@ -12,9 +12,11 @@ namespace WebApplication16.Controllers
     public class NavLinksController : Controller
     {
         private readonly INavRepository _repo;
+        private readonly IPageRepository _prepo;
 
-        public NavLinksController(INavRepository repo)
+        public NavLinksController(INavRepository repo,IPageRepository prepo)
         {
+            _prepo=prepo;
             _repo=repo;
         }
 
@@ -50,9 +52,9 @@ namespace WebApplication16.Controllers
         // GET: NavLinks/Create
         public IActionResult Create()
         {
-            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId");
+            ViewData["PageId"] = new SelectList(_prepo.GetAll(), "PageId", "PageId");
 
-            ViewData["ParentLinks"] =  new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId");
+        ViewData["ParentLinks"] =   GetParentsLinks(null);
             return View();
         }
 
@@ -61,7 +63,7 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NavLinkId,PageId,NavLinkId,Position,Title")] NavLink navLink)
+        public async Task<IActionResult> Create([Bind("NavLinkId,ParentLinkID,PageId,NavLinkId,Position,Title")] NavLink navLink)
         {
             if (ModelState.IsValid)
             {
@@ -69,8 +71,8 @@ namespace WebApplication16.Controllers
         
                 return RedirectToAction("Index");
             }
-            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId", navLink.PageId);
-            ViewData["ParentLinks"] =   new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId",navLink.NavLinkId);
+            ViewData["PageId"] = new SelectList(_prepo.GetAll(), "PageId", "PageId", navLink.PageId);
+            ViewData["ParentLinks"] =         ViewData["ParentLinks"] =  GetParentsLinks(navLink.PageId);
             return View(navLink);
         }
 
@@ -87,8 +89,8 @@ namespace WebApplication16.Controllers
             {
                 return NotFound();
             }
-            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId", navLink.PageId);
-                     ViewData["ParentLinks"]  =  new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId",navLink.NavLinkId);
+            ViewData["PageId"] = new SelectList(_prepo.GetAll(), "PageId", "PageId", navLink.PageId);
+                     ViewData["ParentLinks"] = GetParentsLinks(navLink.PageId);
             return View(navLink);
         }
 
@@ -97,7 +99,7 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("NavLinkId,PageId,NavLinkId,Position,Title")] NavLink navLink)
+        public async Task<IActionResult> Edit(int id, [Bind("NavLinkId,ParentLinkID,PageId,NavLinkId,Position,Title")] NavLink navLink)
         {
             if (id != navLink.NavLinkId)
             {
@@ -124,11 +126,15 @@ namespace WebApplication16.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["PageId"] = new SelectList(_repo.GetAll(), "PageId", "PageId", navLink.PageId);
-                     ViewData["ParentLinks"] =   new SelectList(_repo.GetAll(), "NavLinkId", "NavLinkId",navLink.NavLinkId);
+            ViewData["PageId"] = new SelectList(_prepo.GetAll(), "PageId", "PageId", navLink.PageId);
+            ViewData["ParentLinks"] =  GetParentsLinks(navLink.PageId);
             return View(navLink);
         }
 
+        private IEnumerable<SelectListItem> GetParentsLinks(int? id ){
+            return   new SelectList(_repo.GetAll().Where(r=>r.ParentLinkID==null), "NavLinkId", "NavLinkId",id)
+            .Append(new SelectListItem(){Selected=true,Value="",Text="Without parent"});
+        }
         // GET: NavLinks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

@@ -24,8 +24,61 @@ namespace WebApplication16{
         void Update(NavLink page);
     }
 
+     public interface IRelPagesRepository{
+         void Add(RelatedPages page);
+        IEnumerable<RelatedPages> GetAll();
+        RelatedPages Get(int key);
+        void Remove(int key);
+        void Remove(RelatedPages key);
+        void Update(RelatedPages page);
+    }
 
 
+
+
+    public class RelPagesRepository : IRelPagesRepository
+    {
+
+        private readonly SqliteContext _context;
+
+        public RelPagesRepository(SqliteContext context){
+            this._context=context;
+
+        }
+        public void Add(RelatedPages page)
+        {
+            _context.Add(page);
+            _context.SaveChanges();
+        }
+
+        public RelatedPages Get(int key)
+        {
+            return _context.RelatedPages.SingleOrDefault(a=>a.ID==key);
+        }
+
+        public IEnumerable<RelatedPages> GetAll()
+        {
+            return _context.RelatedPages;
+        }
+
+        public void Remove(RelatedPages key)
+        {
+            _context.Remove(key);
+            _context.SaveChanges();
+        }
+
+        public void Remove(int key)
+        {
+
+            _context.Remove(Get(key));
+            _context.SaveChanges();
+        }
+
+        public void Update(RelatedPages page)
+        {
+            _context.Update(page);
+        }
+    }
     public class NavLinksRepository : INavRepository
     {
         private readonly SqliteContext _context;
@@ -46,7 +99,7 @@ namespace WebApplication16{
 
         public IEnumerable<NavLink> GetAll()
         {
-            return _context.NavLinks.Include(n => n.Page).Include(n => n.ParentLink);;
+            return _context.NavLinks.Include(n => n.Page);
         }
 
         public void Remove(NavLink key)

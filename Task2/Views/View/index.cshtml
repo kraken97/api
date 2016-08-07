@@ -1,15 +1,22 @@
 @{
     Layout="_Pages";
+  
 }
 
 @using WebApplication16.Models
 @model Page
+@{
+      ViewData["Title"]=Model.Title;
+}
+   
 
 
 <div id="content">
 </div>
 
-
+<div >
+    @await Component.InvokeAsync("RelatedPages", new { pageId=Model.PageId })
+</div>
 
 
 @section Scripts{

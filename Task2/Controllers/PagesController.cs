@@ -18,34 +18,34 @@ namespace WebApplication16.Controllers
 
         public PagesController(IPageRepository repo, ILogger<PagesController> logger)
         {
-            _repo=repo;
+            _repo = repo;
             _logger = logger;
-  
+
         }
 
         // GET: Pages
         public IActionResult Index(string url, string title, string prop = "id", bool order = true, int take = 10, int skip = 0)
         {
-            ViewBag.Order=!order;
+            ViewBag.Order = !order;
 
             _logger.LogInformation("index:" + ViewBag.Order as String);
-           
-            
-            IEnumerable<Page> query=_repo.GetAll();
+
+
+            IEnumerable<Page> query = _repo.GetAll();
 
             if (url != null)
             {
-                query =query.Where(page => page.UrlName.Contains(url));
+                query = query.Where(page => page.UrlName.Contains(url));
             }
             if (title != null)
             {
-                query =query.Where(page => page.Title.Contains(title));
+                query = query.Where(page => page.Title.Contains(title));
             }
-             ViewBag.Count=query.Count();
-    
-             var res=Utils.Sort<Page>(query,Utils.GetKeyForPageSorting(prop.ToLower()),order)
-                                .TakeSkip(take,skip).ToList();
-             
+            ViewBag.Count = query.Count();
+
+            var res = Utils.Sort<Page>(query, Utils.GetKeyForPageSorting(prop.ToLower()), order)
+                               .TakeSkip(take, skip).ToList();
+
 
             return View(res);
         }
@@ -110,7 +110,7 @@ namespace WebApplication16.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("PageId,AddedDate,Content,Description,UrlName")] Page page)
+        public IActionResult Edit(int id, [Bind("PageId,AddedDate,Title,Content,Description,UrlName")] Page page)
         {
             if (id != page.PageId)
             {
@@ -122,7 +122,7 @@ namespace WebApplication16.Controllers
                 try
                 {
                     _repo.Update(page);
-                
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -162,24 +162,29 @@ namespace WebApplication16.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var page =_repo.Get(id);
+            var page = _repo.Get(id);
             _repo.Remove(page);
             return RedirectToAction("Index");
         }
 
         private bool PageExists(int id)
         {
-            return _repo.Get(id)!=null;
+            return _repo.Get(id) != null;
         }
 
-         [AcceptVerbs("Get", "Post")]
-        public IActionResult Unique(string UrlName)
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult Unique(string UrlName, string initialUrl)
         {
-         _logger.LogInformation("Validation Uniquness for url "+UrlName);
-            var res = _repo.GetAll().Any(p=>p.UrlName.Equals(UrlName));
-            if(res){
-                return Json(data:false);
+            _logger.LogInformation("Validation Uniquness for url " + UrlName);
+            if (!UrlName.Equals(initialUrl))
+            {
+                var res = _repo.GetAll().Any(p => p.UrlName.Equals(UrlName));
+                if (res)
+                {
+                    return Json(data: false);
+                }
             }
+
 
             return Json(data: true);
         }

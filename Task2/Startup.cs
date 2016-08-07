@@ -45,6 +45,7 @@ namespace Task1
             services.AddLogging();
             services.AddScoped<IPageRepository, PageRepository>();
             services.AddScoped<INavRepository, NavLinksRepository>();
+            services.AddScoped<IRelPagesRepository,RelPagesRepository>();
 
             services.AddDbContext<SqliteContext>(options =>
              options.UseSqlite($"Data Source={Directory.GetCurrentDirectory()}/movie.db"));

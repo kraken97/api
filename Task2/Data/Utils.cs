@@ -9,9 +9,10 @@ namespace WebApplication16
     public static class Utils
     {
    
-
+        
         public static IEnumerable<T> TakeSkip<T>(this IEnumerable<T> sortedData, int take, int skip)
         {
+
             return sortedData.Skip(skip).Take(take);
         }
         public static IEnumerable<T> Sort<T>(this IEnumerable<T> model, Func<T, dynamic> key, bool order) where T : class

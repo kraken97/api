@@ -13,12 +13,17 @@
     <thead>
         <tr>
             @{
+                  var id=@Html.DisplayNameFor(model => model.NavLinkId);
                 var pos=@Html.DisplayNameFor(model => model.Position);
                 var title=@Html.DisplayNameFor(model => model.Title);
                 var page=@Html.DisplayNameFor(model => model.Page);
                 var pageid=@Html.DisplayNameFor(model => model.Page.PageId);
                 var par=@Html.DisplayNameFor(model => model.ParentLinkID);
             }
+            <th>
+                  <a  href="/NavLinks/Index?order=@(ViewBag.Order)&prop=@id">@id</a>
+                
+            </th>
             <th>
                   <a  href="/NavLinks/Index?order=@(ViewBag.Order)&prop=@pos">@pos</a>
                 
@@ -43,6 +48,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NavLinkId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Position)
             </td>

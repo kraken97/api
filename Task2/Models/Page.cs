@@ -13,8 +13,9 @@ namespace WebApplication16.Models
     
         public int PageId { get; set; }
         [Required]
-        [MaxLength(15)]
-        [Remote("Unique", "Pages", ErrorMessage = "UrlName must be unique")]
+        [Remote("Unique", "Pages",AdditionalFields="InitialUrl", ErrorMessage = "UrlName must be unique")]
+        
+        [MaxLengthAttribute(15)]
         public string UrlName { get; set; }
         [MaxLength(50)]
         public string Title { get; set; }

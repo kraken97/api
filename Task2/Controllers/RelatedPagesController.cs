@@ -76,8 +76,7 @@ namespace WebApplication16.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["Page1Id"] = new SelectList(_context.Pages, "PageId", "UrlName", relatedPages.Page1Id);
-            ViewData["Page2Id"] = new SelectList(_context.Pages, "PageId", "UrlName", relatedPages.Page2Id);
+              SetViewData(relatedPages.Page1Id,relatedPages.Page2Id);
             return View(relatedPages);
         }
 
@@ -94,8 +93,7 @@ namespace WebApplication16.Controllers
             {
                 return NotFound();
             }
-            ViewData["Page1Id"] = new SelectList(_context.Pages, "PageId", "UrlName", relatedPages.Page1Id);
-            ViewData["Page2Id"] = new SelectList(_context.Pages, "PageId", "UrlName", relatedPages.Page2Id);
+              SetViewData(relatedPages.Page1Id,relatedPages.Page2Id);
             return View(relatedPages);
         }
 
@@ -131,9 +129,13 @@ namespace WebApplication16.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["Page1Id"] = new SelectList(_context.Pages, "PageId", "UrlName", relatedPages.Page1Id);
-            ViewData["Page2Id"] = new SelectList(_context.Pages, "PageId", "Url", relatedPages.Page2Id);
+                SetViewData(relatedPages.Page1Id,relatedPages.Page2Id);
             return View(relatedPages);
+        }
+        private void SetViewData(int? id,int? id2){
+            
+            ViewData["Page1Id"]=new SelectList(_context.Pages, "PageId", "UrlName",id);
+            ViewData["Page2Id"]=  new SelectList(_context.Pages, "PageId", "Url", id2);
         }
 
         // GET: RelatedPages/Delete/5

@@ -6,6 +6,7 @@
     ViewData["Title"] = "Index";
 }
 
+
 <h2>Index</h2>
 
 <p>
@@ -35,16 +36,21 @@
     </p>
 </form>
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @{
+       @{
+                    var id=@Html.DisplayNameFor(model => model[0].PageId);
                     var added=@Html.DisplayNameFor(model => model[0].AddedDate);
                     var content=  @Html.DisplayNameFor(model => model[0].Content);
                     var  description =@Html.DisplayNameFor(model => model[0].Description);
                     var urlname=@Html.DisplayNameFor(model => model[0].UrlName);
                     var title=@Html.DisplayNameFor(model => model[0].Title);
                 }
+    <thead>
+        <tr>
+                 <th>
+                <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@id">@id</a>
+                </th>
+            <th>
+             
                 <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@added">@added</a>
             </th>
             <th>
@@ -63,6 +69,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+             <td>
+                @item.PageId
+            </td>
             <td>
                 @item.AddedDate
             </td>
@@ -95,3 +104,4 @@
         }
 
       </ul>
+
