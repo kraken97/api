@@ -37,17 +37,21 @@
  
     </div>
       <div class="create col-md-3" >
+            <a asp-action="Create">
      <button class="btn-default btn">
          
-    <a asp-action="Create">Create New</a>
+  Create New
 
      </button>
+     </a>
+   
+  
  </div>
 </div>
 <hr>
 
 
-<table class="table table-bordered table-condensed table-striped">
+<table class="table table-bordered table-striped">
        @{
                     var id=@Html.DisplayNameFor(model => model[0].PageId);
                     var added=@Html.DisplayNameFor(model => model[0].AddedDate);
@@ -98,10 +102,26 @@
                 @item.UrlName
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PageId">Edit</a> |
+              
+              
+                <a asp-action="Edit" asp-route-id="@item.PageId">
+                      <button class="btn-default btn btn-primary btn-xs">
+                    Edit
+                      </button></a> |
                      <!--dont sure what   i should to do use details or js link to page -->
-                <a href="/View/@item.UrlName">View</a> | |
-                <a asp-action="Delete" asp-route-id="@item.PageId">Delete</a>
+                
+               <a href="/View/@item.UrlName"> <button class="btn-default btn btn-info btn-xs">View   </button></a> |
+
+                <a asp-action="Delete" asp-route-id="@item.PageId">
+                    <button class="btn-default btn btn-danger btn-xs">
+                    Delete
+                    </button></a>|
+                  <a asp-action="AddRelations"  asp-route-id="@item.PageId">
+     <button class="btn-default btn btn-xs">
+      edit Relations 
+
+     </button>
+     </a>
             </td>
         </tr>
 }

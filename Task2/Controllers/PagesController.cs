@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Task2.Models;
 using Task2;
+using Task2.UtilsModels;
 
 namespace Task2.Controllers
 {
@@ -15,9 +16,11 @@ namespace Task2.Controllers
     {
         private readonly ILogger<PagesController> _logger;
         private readonly IPageRepository _repo;
+        private readonly IRelPagesRepository _related;
 
-        public PagesController(IPageRepository repo, ILogger<PagesController> logger)
+        public PagesController(IPageRepository repo,IRelPagesRepository related, ILogger<PagesController> logger)
         {
+            _related=related;
             _repo = repo;
             _logger = logger;
 
@@ -59,7 +62,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var page = await Task<Page>.Run(()=>_repo.Get(id.Value));
+            var page = await Task<Page>.Run(() => _repo.Get(id.Value));
             if (page == null)
             {
                 return NotFound();
@@ -74,6 +77,56 @@ namespace Task2.Controllers
             return View();
         }
 
+        public IActionResult AddRelations(int id)
+        {
+            var related=_related.GetAll().Where(r=>r.Page1Id==id||r.Page2Id==id).Select(r=>r.Page1Id==id?r.Page2Id:r.Page1Id).ToList();
+
+            var res = _repo.GetAll()
+                    .Where(r=>r.PageId!=id)
+                        .Select(r => new RelPagesView() {
+                                 RelPageId = r.PageId,
+                                 IsSelected = related.Contains(r.PageId),
+                                 Name = r.UrlName })
+                            .ToList();
+            return View(res);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddRelations(int id,List<RelPagesView> list)
+        {
+
+            if(ModelState.IsValid){
+                _logger.LogInformation(id.ToString());
+                var relPages=_related.GetAll();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    _logger.LogInformation(i+"__________________");
+                    var item = list[i];
+                  var relpage=  relPages.FirstOrDefault(r=>(r.Page1Id==id&&r.Page2Id==item.RelPageId)||(r.Page1Id==item.RelPageId&&r.Page2Id==id));
+
+                 if(relpage==null&&item.IsSelected){
+                     _related.Add(new RelatedPages(){Page1Id=id,Page2Id=item.RelPageId});
+                 }
+                 else if(relpage!=null&&!item.IsSelected){
+                     _related.Remove(relpage);
+                 }
+                }
+                 return RedirectToAction("Index");
+            }
+            var related=_related.GetAll().Where(r=>r.Page1Id==id||r.Page2Id==id).Select(r=>r.Page1Id==id?r.Page2Id:r.Page1Id).ToList();
+
+            var res = _repo.GetAll()
+                    .Where(r=>r.PageId!=id)
+                        .Select(r => new RelPagesView() {
+                                 RelPageId = r.PageId,
+                                 IsSelected = related.Contains(r.PageId),
+                                 Name = r.UrlName })
+                            .ToList();
+            _logger.LogInformation((res==null)+"--------------");
+            return View(res);
+        }
         // POST: Pages/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.

@@ -77,6 +77,7 @@ namespace Task2{
         public void Update(RelatedPages page)
         {
             _context.Update(page);
+            _context.SaveChanges();
         }
     }
     public class NavLinksRepository : INavRepository
