@@ -69,7 +69,7 @@
 </table>
 <ul class="pagination">
            @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/10);i++){
-            <li><a  href="/RelatedPages/Index?take=5&skip=@(i*5)">@(i+1)</a></li>
+            <li><a  href="/RelatedPages/Index?take=5&skip=@(i*5)@ViewBag.orderreq@ViewBag.propreq">@(i+1)</a></li>
         }
 
       </ul>

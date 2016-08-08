@@ -113,7 +113,7 @@
 
       <ul class="pagination">
            @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/5);i++){
-            <li><a  href="/Pages/Index?take=5&skip=@(i*5)">@(i+1)</a></li>
+            <li><a  href="/Pages/Index?take=5&skip=@(i*5)&@ViewBag.titlereq&@ViewBag.urlreq&@ViewBag.propreq&@ViewBag.orderreq">@(i+1)</a></li>
         }
 
       </ul>
