@@ -36,10 +36,10 @@ namespace Task2
                 {
 
                     c.NavLinks.AddRange(new NavLink() { Title = "Nav to test 1 ", PageId = 1, Position = 1 },
-                    new NavLink() { Title = "Nav to test 2 ", PageId = 2, Position = 1 },
+                    new NavLink() { Title = "Nav2 ", PageId = 2, Position = 1 },
                     new NavLink() { Title = "Nav to test 3 ", PageId = 3, Position = 1 },
-                    new NavLink() { Title = "Nav to test 4 ", PageId = 4, Position = 1 },
-                    new NavLink() { Title = "Nav to test 3 ", PageId = 3, Position = 1 });  
+                    new NavLink() { Title = "Nav  ", PageId = 4, Position = 1 },
+                    new NavLink() { Title = "Nav to test 5 ", PageId = 5, Position = 1 });  
                         c.SaveChanges();
                     c.NavLinks.AddRange(  new NavLink() { Title = "Nav to test 4 ",ParentLinkID=2, PageId = 4, Position = 1 },
                     new NavLink() { Title = "Nav to test 3 ", PageId = 3,ParentLinkID=2, Position = 1 });
