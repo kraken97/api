@@ -64,9 +64,13 @@
   
     </tbody>
 </table>
+@{
+    var take=(int)ViewBag.Take;
+
+}
 <ul class="pagination">
-           @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/10);i++){
-            <li><a  href="/RelatedPages/Index?take=5&skip=@(i*5)@ViewBag.orderreq@ViewBag.propreq">@(i+1)</a></li>
+           @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/@take);i++){
+            <li><a  href="/RelatedPages/Index?take=@take&skip=@(i*@take)@ViewBag.orderreq@ViewBag.propreq">@(i+1)</a></li>
         }
 
       </ul>

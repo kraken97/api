@@ -26,7 +26,8 @@ namespace Task2.Controllers
         public async Task<IActionResult> Index(string prop = "id", bool order = true, int take = 5, int skip = 0)
         {
 
-            ViewData["take"]=5;
+
+            ViewBag.Take=5;
             ViewBag.Order = !order;
             var query = _repo.GetAll();
             ViewBag.Count = query.Count();

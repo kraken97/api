@@ -13,28 +13,30 @@ namespace Task2.Controllers
     public class RelatedPagesController : Controller
     {
         private readonly IRelPagesRepository _context;
-        private readonly  ILogger<RelatedPages> _logger;
+        private readonly ILogger<RelatedPages> _logger;
 
-        public RelatedPagesController(IRelPagesRepository context,ILogger<RelatedPages> logger)
+        public RelatedPagesController(IRelPagesRepository context, ILogger<RelatedPages> logger)
         {
-            _logger=logger;
-            _context = context;    
+            _logger = logger;
+            _context = context;
         }
 
         // GET: RelatedPages
         public IActionResult Index(string prop = "id", bool order = true, int take = 5, int skip = 0)
         {
 
-               ViewBag.Order = !order;
+            ViewBag.Take = 5;
+
+            ViewBag.Order = !order;
             var query = _context.GetAll();
             ViewBag.Count = query.Count();
             var res = Utils.Sort<RelatedPages>(query, Utils.GetKeyForRelPages(prop), order)
                                .TakeSkip(take, skip).ToList();
-            
+
             return View(res);
         }
 
-       
+
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -42,7 +44,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var relatedPages =  _context.Get(id.Value);
+            var relatedPages = _context.Get(id.Value);
             if (relatedPages == null)
             {
                 return NotFound();
@@ -61,6 +63,6 @@ namespace Task2.Controllers
             return RedirectToAction("Index");
         }
 
-     
+
     }
 }

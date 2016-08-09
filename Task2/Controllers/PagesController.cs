@@ -31,6 +31,7 @@ namespace Task2.Controllers
         {
             ViewBag.Order = !order;
 
+            ViewBag.Take=5;
             _logger.LogInformation("index:" + ViewBag.Order as String);
 
 
@@ -216,10 +217,21 @@ namespace Task2.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             var page = _repo.Get(id);
+            try
+            {
+                     _repo.Remove(page);
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+            {
+                
+                return  this.RedirectToAction("FkError");
+            }
             _repo.Remove(page);
             return RedirectToAction("Index");
         }
-
+        public IActionResult FkError(){
+            return View();
+        }
         private bool PageExists(int id)
         {
             return _repo.Get(id) != null;
