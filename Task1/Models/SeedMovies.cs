@@ -16,6 +16,7 @@ namespace Task1
             using (var context = new SqliteContext(
                 serviceProvider.GetRequiredService<DbContextOptions<SqliteContext>>()))
             {
+                context.Database.Migrate();
                 // Look for any movies.
                 if (context.Movie.Any())
                 {
