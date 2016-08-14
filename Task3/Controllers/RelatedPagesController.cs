@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Task2.Models;
+using Task3.Models;
 
-namespace Task2.Controllers
+namespace Task3.Controllers
 {
+    [Authorize]
     public class RelatedPagesController : Controller
     {
         private readonly IRelPagesRepository _context;

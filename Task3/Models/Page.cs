@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Task2.Models
+namespace Task3.Models
 {
     public class Page
     {

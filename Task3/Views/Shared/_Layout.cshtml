@@ -1,14 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Task2</title>
+    <title>@ViewData["Title"] - Task3</title>
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -27,39 +26,36 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                 <li><a href="/Pages/Index" class="navbar-brand">Home</a></li>
+                <a asp-area="" asp-controller="Pages" asp-action="Index" class="navbar-brand">Task3</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/Pages/Index">Pages</a></li>
-                    <li><a href="/NavLinks/Index">NavLinks</a></li>
-                    <li><a href="/RelatedPages/Index">RelatedPages</a></li>
+                    <li><a asp-area="" asp-controller="Pages" asp-action="Index">Pages</a></li>
+                    <li><a asp-area="" asp-controller="NavLinks" asp-action="Index">NavLinks</a></li>
+                    <li><a asp-area="" asp-controller="RelatedPages" asp-action="Index">RelPages</a></li>
                 </ul>
-               
+                @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
     </div>
-     @await Component.InvokeAsync("RandomLinks")
     <div class="container body-content">
+        @await Component.InvokeAsync("RandomLinks")
         @RenderBody()
         <hr />
         <footer>
-            <div class="copyring text-center">
-        <p>© 2016 Task2 All Rights Reserved. </p>
-        <p>Made with love by <a href="http://github.com/kraken97/" target="_blank">kraken97</a> / My page: <a href="https://kraken97.github.io/" target="_blank">Website </a></p>
-      </div>
+            <p>&copy; 2016 - Task3</p>
         </footer>
-        <hr>
     </div>
 
     <environment names="Development">
+        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
-    
     </environment>
     <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.3.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
         </script>
@@ -69,7 +65,7 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
-  <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

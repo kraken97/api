@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Task2.Models;
+using Task3.Models;
 
-namespace Task2.ViewComponents
+namespace Task3.ViewComponents
 {
     public class RandomLinksViewComponent : ViewComponent
     {

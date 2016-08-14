@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Task2.Models;
+using Task3.Models;
 using System.Linq;
 using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace Task2
+namespace Task3
 {
     public static class Utils
     {
@@ -77,7 +77,7 @@ namespace Task2
             switch (prop)
             {
                 case "id":
-                    key = (p) => p.PageId.ToString();
+                    key = (p) => p.PageId;
                     break;
                 case "title":
                     key = (p) => p.Title;

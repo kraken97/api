@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Task2.Models
+namespace Task3.Models
 {
     public class RelatedPages
     {

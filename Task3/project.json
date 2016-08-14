@@ -1,17 +1,22 @@
-﻿{
-  "userSecretsId": "aspnet-Task2-dc039d0c-3c1b-41af-b0b8-c3f4eb83af95",
+{
+  "userSecretsId": "aspnet-Task1-20160813042126",
 
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.0",
       "type": "platform"
     },
+    "Microsoft.Extensions.SecretManager.Tools": "1.0.0-preview2-final",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.Facebook":"*",
+    "Microsoft.AspNetCore.Authentication.Google":"1.0.0-rc2-final",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "MailKit":"*",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "xunit":"*",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",
       "type": "build"

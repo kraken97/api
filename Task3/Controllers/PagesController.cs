@@ -6,52 +6,79 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Task2.Models;
-using Task2;
-using Task2.UtilsModels;
+using Task3.Models;
+using Task3;
+using Task3.UtilsModels;
+using System.Net.Http;
+using JSerializer = Newtonsoft.Json.JsonConvert;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Task2.Controllers
+namespace Task3.Controllers
 {
+    [Authorize]
     public class PagesController : Controller
     {
         private readonly ILogger<PagesController> _logger;
         private readonly IPageRepository _repo;
         private readonly IRelPagesRepository _related;
+        private const string _domain = "localhost:5000";
+        private static readonly string _apiUrl = $"http://{_domain}/api/page/";
+        private readonly HttpClient _httpClient;
 
-        public PagesController(IPageRepository repo,IRelPagesRepository related, ILogger<PagesController> logger)
+
+        public PagesController(IPageRepository repo, IRelPagesRepository related, ILogger<PagesController> logger)
         {
-            _related=related;
+            _related = related;
             _repo = repo;
             _logger = logger;
+            _httpClient = new HttpClient();
+
+
+        }
+        //maybe should create new instance of httpclient or clear headers
+        private async Task<Page> GetPage(int id)
+        {
+
+            string query = PagesController._apiUrl + id;
+
+            var res = await (await _httpClient.GetAsync(query)).Content.ReadAsStringAsync();
+            if (res != null)
+            {
+                _logger.LogInformation("Page accepted from Rest api");
+            }
+            else
+            {
+                _logger.LogWarning("Failed to get page from Rest apo");
+            }
+            var page = JSerializer.DeserializeObject<Page>(res);
+            return page;
 
         }
 
         // GET: Pages
-        public IActionResult Index(string url, string title, string prop = "id", bool order = true, int take = 5, int skip = 0)
+        public async Task<IActionResult> Index(string title, string prop = "id", bool order = true, int take = 5, int skip = 0)
         {
+            string param = $@"?order={order}&prop={prop}&take={take}&skip={skip}&title={title}";
+            string query = PagesController._apiUrl + param;
+
+            var res = await (await _httpClient.GetAsync(query)).Content.ReadAsStringAsync();
+            if (res != null)
+            {
+                _logger.LogInformation("Page accepted from Rest api");
+            }
+            else
+            {
+                _logger.LogError("Failed to get page from Rest api");
+            }
+            var pages = JSerializer.DeserializeObject<List<Page>>(res);
             ViewBag.Order = !order;
+            ViewBag.Take = 5;
+            var countJson =await (await _httpClient.GetAsync(_apiUrl+"count")).Content.ReadAsStringAsync();
+            _logger.LogInformation(countJson);
+            ViewBag.Count= int.Parse(countJson);
+            _logger.LogInformation(pages.Count() + "");
 
-            ViewBag.Take=5;
-            _logger.LogInformation("index:" + ViewBag.Order as String);
-
-
-            IEnumerable<Page> query = _repo.GetAll();
-
-            if (url != null)
-            {
-                query = query.Where(page => page.UrlName.Contains(url));
-            }
-            if (title != null)
-            {
-                query = query.Where(page => page.Title.Contains(title));
-            }
-            ViewBag.Count = query.Count();
-
-            var res = Utils.Sort<Page>(query, Utils.GetKeyForPageSorting(prop.ToLower()), order)
-                               .TakeSkip(take, skip).ToList();
-
-
-            return View(res);
+            return View(pages.ToList());
         }
 
 
@@ -63,7 +90,7 @@ namespace Task2.Controllers
                 return NotFound();
             }
 
-            var page = await Task<Page>.Run(() => _repo.Get(id.Value));
+            var page = await GetPage(id.Value);
             if (page == null)
             {
                 return NotFound();
@@ -80,14 +107,16 @@ namespace Task2.Controllers
 
         public IActionResult AddRelations(int id)
         {
-            var related=_related.GetAll().Where(r=>r.Page1Id==id||r.Page2Id==id).Select(r=>r.Page1Id==id?r.Page2Id:r.Page1Id).ToList();
+            var related = _related.GetAll().Where(r => r.Page1Id == id || r.Page2Id == id).Select(r => r.Page1Id == id ? r.Page2Id : r.Page1Id).ToList();
 
             var res = _repo.GetAll()
-                    .Where(r=>r.PageId!=id)
-                        .Select(r => new RelPagesView() {
-                                 RelPageId = r.PageId,
-                                 IsSelected = related.Contains(r.PageId),
-                                 Name = r.UrlName })
+                    .Where(r => r.PageId != id)
+                        .Select(r => new RelPagesView()
+                        {
+                            RelPageId = r.PageId,
+                            IsSelected = related.Contains(r.PageId),
+                            Name = r.UrlName
+                        })
                             .ToList();
             return View(res);
 
@@ -95,37 +124,41 @@ namespace Task2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddRelations(int id,List<RelPagesView> list)
+        public IActionResult AddRelations(int id, List<RelPagesView> list)
         {
 
-            if(ModelState.IsValid){
+            if (ModelState.IsValid)
+            {
                 _logger.LogInformation(id.ToString());
-                var relPages=_related.GetAll();
+                var relPages = _related.GetAll();
                 for (int i = 0; i < list.Count; i++)
                 {
-                    _logger.LogInformation(i+"__________________");
                     var item = list[i];
-                  var relpage=  relPages.FirstOrDefault(r=>(r.Page1Id==id&&r.Page2Id==item.RelPageId)||(r.Page1Id==item.RelPageId&&r.Page2Id==id));
+                    var relpage = relPages.FirstOrDefault(r => (r.Page1Id == id && r.Page2Id == item.RelPageId) || (r.Page1Id == item.RelPageId && r.Page2Id == id));
 
-                 if(relpage==null&&item.IsSelected){
-                     _related.Add(new RelatedPages(){Page1Id=id,Page2Id=item.RelPageId});
-                 }
-                 else if(relpage!=null&&!item.IsSelected){
-                     _related.Remove(relpage);
-                 }
+                    if (relpage == null && item.IsSelected)
+                    {
+                        _related.Add(new RelatedPages() { Page1Id = id, Page2Id = item.RelPageId });
+                    }
+                    else if (relpage != null && !item.IsSelected)
+                    {
+                        _related.Remove(relpage);
+                    }
                 }
-                 return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
-            var related=_related.GetAll().Where(r=>r.Page1Id==id||r.Page2Id==id).Select(r=>r.Page1Id==id?r.Page2Id:r.Page1Id).ToList();
+            var related = _related.GetAll().Where(r => r.Page1Id == id || r.Page2Id == id).Select(r => r.Page1Id == id ? r.Page2Id : r.Page1Id).ToList();
 
             var res = _repo.GetAll()
-                    .Where(r=>r.PageId!=id)
-                        .Select(r => new RelPagesView() {
-                                 RelPageId = r.PageId,
-                                 IsSelected = related.Contains(r.PageId),
-                                 Name = r.UrlName })
+                    .Where(r => r.PageId != id)
+                        .Select(r => new RelPagesView()
+                        {
+                            RelPageId = r.PageId,
+                            IsSelected = related.Contains(r.PageId),
+                            Name = r.UrlName
+                        })
                             .ToList();
-            _logger.LogInformation((res==null)+"--------------");
+
             return View(res);
         }
         // POST: Pages/Create
@@ -133,25 +166,28 @@ namespace Task2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("PageId,Title,AddedDate,Content,Description,UrlName")] Page page)
+        public  async Task<IActionResult> Create([Bind("PageId,Title,AddedDate,Content,Description,UrlName")] Page page)
         {
             if (ModelState.IsValid)
             {
-                _repo.Add(page);
+                var pageAsString = JSerializer.SerializeObject(page);
+                StringContent theContent = new StringContent(pageAsString, System.Text.Encoding.UTF8, "application/json");
+               await  _httpClient.PostAsync(_apiUrl, theContent);
+
                 return RedirectToAction("Index");
             }
             return View(page);
         }
 
         // GET: Pages/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var page = _repo.Get(id.Value);
+            var page = await GetPage(id.Value);
             if (page == null)
             {
                 return NotFound();
@@ -164,7 +200,7 @@ namespace Task2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("PageId,AddedDate,Title,Content,Description,UrlName")] Page page)
+        public async Task<IActionResult> Edit(int id, [Bind("PageId,AddedDate,Title,Content,Description,UrlName")] Page page)
         {
             if (id != page.PageId)
             {
@@ -175,7 +211,10 @@ namespace Task2.Controllers
             {
                 try
                 {
-                    _repo.Update(page);
+                    var query = _apiUrl + id;
+                    var pageAsString = JSerializer.SerializeObject(page);
+                    StringContent theContent = new StringContent(pageAsString, System.Text.Encoding.UTF8, "application/json");
+                    await _httpClient.PutAsync(query, theContent);
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -195,14 +234,14 @@ namespace Task2.Controllers
         }
 
         // GET: Pages/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var page = _repo.Get(id.Value);
+            var page = await GetPage(id.Value);
             if (page == null)
             {
                 return NotFound();
@@ -219,22 +258,25 @@ namespace Task2.Controllers
             var page = _repo.Get(id);
             try
             {
-                     _repo.Remove(page);
+                var pageAsString = JSerializer.SerializeObject(page);
+                StringContent theContent = new StringContent(pageAsString, System.Text.Encoding.UTF8, "application/json");
+                _httpClient.DeleteAsync(_apiUrl + id);
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
-                
-                return  this.RedirectToAction("FkError");
+
+                return this.RedirectToAction("FkError");
             }
-            _repo.Remove(page);
+
             return RedirectToAction("Index");
         }
-        public IActionResult FkError(){
+        public IActionResult FkError()
+        {
             return View();
         }
         private bool PageExists(int id)
         {
-            return _repo.Get(id) != null;
+            return GetPage(id).Result != null;
         }
 
         [AcceptVerbs("Get", "Post")]

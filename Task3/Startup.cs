@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Task2;
-using Task2.Models;
-
+using Task3;
+using Task3.Models;
+using Task3.Services;
 
 namespace Task1
 {
@@ -31,6 +32,9 @@ namespace Task1
                 builder.AddUserSecrets();
             }
 
+            //should delete this
+            builder.AddUserSecrets();
+
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -45,10 +49,21 @@ namespace Task1
             services.AddLogging();
             services.AddScoped<IPageRepository, PageRepository>();
             services.AddScoped<INavRepository, NavLinksRepository>();
-            services.AddScoped<IRelPagesRepository,RelPagesRepository>();
+            services.AddScoped<IRelPagesRepository, RelPagesRepository>();
+            services.AddIdentity<User, IdentityRole>()
+           .AddEntityFrameworkStores<SqliteContext>()
+           .AddDefaultTokenProviders();
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+            // services.Configure<MvcOptions>(options =>
+            //                     {
+            //                         options.Filters.Add(new RequireHttpsAttribute());
+            //                     });
 
             services.AddDbContext<SqliteContext>(options =>
              options.UseSqlite($"Data Source={Directory.GetCurrentDirectory()}/movie.db"));
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
         }
 
@@ -70,12 +85,23 @@ namespace Task1
             }
 
             app.UseStaticFiles();
+            app.UseIdentity();
 
+
+
+            app.UseFacebookAuthentication(new FacebookOptions()
+            {
+                AppId = Configuration["Authentication:Facebook:AppId"],
+                AppSecret = Configuration["Authentication:Facebook:AppSecret"]
+            });
+        //     app.UseGoogleAuthentication(
+        //         clientId: "000-000.apps.googleusercontent.com",
+        //  clientSecret: "00000000000");
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
+                routes.MapRoute(    
                     name: "default",
                     template: "{controller=Pages}/{action=Index}/{id?}");
             });

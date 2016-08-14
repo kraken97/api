@@ -1,4 +1,4 @@
-namespace Task2.UtilsModels{
+namespace Task3.UtilsModels{
 
 
     public class RelPagesView{

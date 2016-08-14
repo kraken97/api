@@ -1,7 +1,0 @@
-.vscode
-bin
-obj
-*.db
-*.lock
-*.xproj
-*.user

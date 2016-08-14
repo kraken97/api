@@ -1,42 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Task2.Models;
+using Task3.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Task3;
 
-namespace Task2{
-   public interface IPageRepository{
-         void Add(Page page);
-        IEnumerable<Page> GetAll();
-        Page Get(int key);
-        void Remove(int key);
-        void Remove(Page key);
-        void Update(Page page);
-        IEnumerable<Page> SortBy(string prop,bool order);
-    }
-
-     public interface INavRepository{
-         void Add(NavLink page);
-        IEnumerable<NavLink> GetAll();
-        NavLink Get(int key);
-        void Remove(int key);
-        void Remove(NavLink key);
-        void Update(NavLink page);
-    }
-
-     public interface IRelPagesRepository{
-         void Add(RelatedPages page);
-        IEnumerable<RelatedPages> GetAll();
-        RelatedPages Get(int key);
-        void Remove(int key);
-        void Remove(RelatedPages key);
-        void Update(RelatedPages page);
-    }
-
-
-
-
-    public class RelPagesRepository : IRelPagesRepository
+public class RelPagesRepository : IRelPagesRepository
     {
 
         private readonly SqliteContext _context;
@@ -136,7 +105,9 @@ namespace Task2{
 
         public Page Get(int key)
         {
-          return  _context.Pages.SingleOrDefault(r=>r.PageId==key);
+          var res= _context.Pages.SingleOrDefault(r=>r.PageId==key);
+          _context.SaveChanges();
+          return res;
         }
 
         public IEnumerable<Page> GetAll()
@@ -156,18 +127,18 @@ namespace Task2{
            _context.SaveChanges();
         }
 
-        public IEnumerable<Page> SortBy(string prop,bool order)
+    
+        //filter data by title then sort and then  skip   and take ;
+         public  IEnumerable<Page> SortAndTake(string titleFilter,string propOder,bool order,int take,int skip)
         {
-         return Utils.Sort<Page>(_context.Pages,Utils.GetKeyForPageSorting(prop.ToLower()),order)  ; 
+            var filteredData= string.IsNullOrEmpty(titleFilter)?_context.Pages:this._context.Pages.Where(r=>r.Title.Contains(titleFilter));
+         return Utils.Sort<Page>(filteredData,Utils.GetKeyForPageSorting(propOder.ToLower()),order).Skip(skip).Take(take);
         }
 
         public void Update(Page page)
         {
-            _context.Update(page);
+            _context.Pages.Update(page);
             _context.SaveChanges();
         }
+
     }
-
-
-
-}

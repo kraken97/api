@@ -1,12 +1,12 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Task2.Models;
+using Task3.Models;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Task2
+namespace Task3
 {
     public class SeedData
     {
