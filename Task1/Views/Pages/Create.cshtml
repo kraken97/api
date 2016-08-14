@@ -1,0 +1,83 @@
+@model Task1.Models.Page
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<form asp-action="Create">
+    <div class="form-horizontal">
+        <h4>Page</h4>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Title" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="UrlName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="UrlName" class="form-control" />
+                <span asp-validation-for="UrlName" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+             <label asp-for="Content" class="col-md-2 control-label"></label>
+             <span asp-validation-for="Content" class="text-danger" />
+                <textarea asp-for="Content" class="form-control ContentW" ></textarea>
+                
+            
+        </div>
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+    tinymce.init({
+  selector: '.ContentW',
+  height: 500,
+  theme: 'modern',
+  plugins: [
+    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+    'searchreplace wordcount visualblocks visualchars code fullscreen',
+    'insertdatetime media nonbreaking save table contextmenu directionality',
+    'emoticons template paste textcolor colorpicker textpattern imagetools'
+  ],
+  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+  toolbar2: 'print preview media | forecolor backcolor emoticons',
+  image_advtab: true,
+  templates: [
+    { title: 'Test template 1', content: 'Test 1' },
+    { title: 'Test template 2', content: 'Test 2' }
+  ],
+  content_css: [
+    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i'
+  ]
+ });
+
+    </script>
+}

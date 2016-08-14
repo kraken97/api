@@ -1,0 +1,138 @@
+@using Task1;
+@using Task1.Models;
+@using System;
+@model List<Page>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<hr>
+   
+    <div class="container-fluid">
+        <div class="col-md-9">
+<form asp-controller="Pages" asp-action="Index" method="get" style="display:inline">
+    
+
+        <table>
+            <tr style="display:inline">
+                <td>Title</td>
+                <td> <input type="text" name="title" class="form-control"></td>
+            </tr>
+            <tr style="display:inline">
+                <td>
+                            <input type="submit" value="Filter" class="btn btn-default" />
+                    </td>
+            </tr>
+        </table>
+       
+
+</form>
+
+ 
+    </div>
+      <div class="create col-md-3" >
+            <a asp-action="Create">
+     <button class="btn-default btn">
+         
+  Create New
+
+     </button>
+     </a>
+   
+  
+ </div>
+</div>
+<hr>
+
+
+<table class="table table-bordered table-striped">
+       @{
+                    var id=@Html.DisplayNameFor(model => model[0].PageId);
+                    var added=@Html.DisplayNameFor(model => model[0].AddedDate);
+                    var content=  @Html.DisplayNameFor(model => model[0].Content);
+                    var  description =@Html.DisplayNameFor(model => model[0].Description);
+                    var urlname=@Html.DisplayNameFor(model => model[0].UrlName);
+                    var title=@Html.DisplayNameFor(model => model[0].Title);
+                }
+    <thead>
+        <tr>
+                 <th>
+                <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@id">@id</a>
+                </th>
+            <th>
+             
+                <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@added">@added</a>
+            </th>
+            <th>
+                <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@title">@title</a>
+                </th>
+        
+            <th>
+                <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@description">@description</a>
+            </th>
+            <th>
+                 <a  href="/Pages/Index?order=@(ViewBag.Order)&prop=@urlname">@urlname</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+             <td>
+                @item.PageId
+            </td>
+            <td>
+                @item.AddedDate
+            </td>
+            <td>
+                @item.Title
+            </td>
+      
+            <td>
+                @item.Description
+            </td>
+            <td>
+                @item.UrlName
+            </td>
+            <td>
+              
+              
+                <a asp-action="Edit" asp-route-id="@item.PageId">
+                      <button class="btn-default btn btn-primary btn-xs">
+                    Edit
+                      </button></a> |
+                     <!--dont sure what   i should to do use details or js link to page -->
+                
+               <a href="/View/@item.UrlName"> <button class="btn-default btn btn-info btn-xs">View   </button></a> |
+
+                <a asp-action="Delete" asp-route-id="@item.PageId">
+                    <button class="btn-default btn btn-danger btn-xs">
+                    Delete
+                    </button></a>|
+                  <a asp-action="AddRelations"  asp-route-id="@item.PageId">
+     <button class="btn-default btn btn-xs">
+      edit Relations 
+
+     </button>
+     </a>
+            </td>
+        </tr>
+}
+
+  
+    </tbody>
+</table>
+
+@{
+    var take=(int)ViewBag.Take;
+
+}
+      <ul class="pagination">
+           @for(int i =0;i<Math.Ceiling((double)ViewBag.Count/@take);i++){
+            <li><a  href="/Pages/Index?take=@take&skip=@(i*@take)&@ViewBag.titlereq&@ViewBag.urlreq&@ViewBag.propreq&@ViewBag.orderreq">@(i+1)</a></li>
+        }
+
+      </ul>
+

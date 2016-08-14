@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
-using Task3;
-using Task3.Controllers;
-using Task3.Models;
+using Task1;
+using Task1.Controllers;
+using Task1.Models;
 
 using Xunit;
 
@@ -20,11 +21,12 @@ namespace Tests
         public void PageControllerGet_Should_ReturnPageByIndex()
         {
             var mockRepo= new Mock<IPageRepository>();
+             var mockLogger= new Mock<ILogger<PageApiController>>();
             var page =new Page(){PageId=1,AddedDate=DateTime.Now,Content="test"};
             mockRepo.Setup(repo=>repo.Get(1)).Returns(page);
-            var controller= new PageController(mockRepo.Object);
+            var controller= new PageApiController(mockRepo.Object,mockLogger.Object);
     
-            var res= controller.GetPage(1).Result;
+            var res= controller.GetPage(1,null).Result;
             var Result=new JsonResult(page);
             
             Assert.Equal(Result.Value,(res as JsonResult).Value);
@@ -34,13 +36,14 @@ namespace Tests
         public void PageControllerGetAll_Should_ReturnPagesWithFiltering()
         {
             var mockRepo= new Mock<IPageRepository>();
+               var mockLogger= new Mock<ILogger<PageApiController>>();
             var page =new Page(){PageId=1,AddedDate=DateTime.Now,Content="test"};
             var page2 =new Page(){PageId=2,AddedDate=DateTime.Now,Content="test"};
             var list=new List<Page>();
             list.Add(page);
             list.Add(page2);
             mockRepo.Setup(repo=>repo.SortAndTake("","id",false,10,0)).Returns(list);
-            var controller= new PageController(mockRepo.Object);
+            var controller= new PageApiController(mockRepo.Object,mockLogger.Object);
 
             var res= controller.GetPages();
             var Result=new JsonResult(list);
@@ -52,11 +55,12 @@ namespace Tests
         public void PageControllerPost_Should_ReturnBadReqWhenModelNotValid()
         {
             var mockRepo= new Mock<IPageRepository>();
+               var mockLogger= new Mock<ILogger<PageApiController>>();
             var page =new Page(){PageId=1,AddedDate=DateTime.Now};
       
             mockRepo.Setup(r=>r.Add(page));
             var repo=mockRepo.Object;
-            var controller= new PageController(repo);
+            var controller= new PageApiController(repo,mockLogger.Object);
             controller.ModelState.AddModelError("Content", "Required");
             var res=controller.PostPage(page).Result;   
             var error =Assert.IsType<BadRequestObjectResult>(res);  
@@ -67,11 +71,12 @@ namespace Tests
         public void PageControllerPut_Should_ReturnBadReqWhenModelNotValid()
         {
             var mockRepo= new Mock<IPageRepository>();
+               var mockLogger= new Mock<ILogger<PageApiController>>();
             var page =new Page(){PageId=1,AddedDate=DateTime.Now};
       
             mockRepo.Setup(r=>r.Update(page));
             var repo=mockRepo.Object;
-            var controller= new PageController(repo);
+            var controller= new PageApiController(repo,mockLogger.Object);
             controller.ModelState.AddModelError("Content", "Required");
             var res=controller.PostPage(page).Result;   
             var error =Assert.IsType<BadRequestObjectResult>(res);  
@@ -82,11 +87,12 @@ namespace Tests
         public void PageControllerDelete_Should_404WhenPageNotExist()
         {
             var mockRepo= new Mock<IPageRepository>();
+               var mockLogger= new Mock<ILogger<PageApiController>>();
 
             mockRepo.Setup(r=>r.Remove(1));
 
             var repo=mockRepo.Object;
-            var controller= new PageController(repo);
+            var controller= new PageApiController(repo,mockLogger.Object);
 
             var res=controller.DeletePage(1).Result;   
             var error =Assert.IsType<NotFoundResult>(res);  
@@ -97,12 +103,13 @@ namespace Tests
         public void PageControllerDelete_Should_OkWhenAfterDelete()
         {
             var mockRepo= new Mock<IPageRepository>();
+               var mockLogger= new Mock<ILogger<PageApiController>>();
             var page =new Page(){PageId=1,AddedDate=DateTime.Now,Content="test"};
             mockRepo.Setup(r=>r.Get(1)).Returns(page);
             mockRepo.Setup(r=>r.Remove(1));
 
             var repo=mockRepo.Object;
-            var controller= new PageController(repo);
+            var controller= new PageApiController(repo,mockLogger.Object);
 
             var res=controller.DeletePage(1).Result;   
             var error =Assert.IsType<OkObjectResult>(res);  

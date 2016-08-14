@@ -1,0 +1,9 @@
+@model IEnumerable<Task1.Models.Page>
+
+<h3>Related Pages</h3>
+<ul>
+    @foreach (var page in Model)
+    {
+        <li><a href="/View/@(page.UrlName)">@(page.UrlName)<a></li>
+    }
+</ul>

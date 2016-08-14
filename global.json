@@ -1,5 +1,5 @@
 {
-  "projects": [ "Task3", "UnitTest" ],
+  "projects": [ "Task1", "UnitTest" ],
   "sdk": {
     "version": "1.0-*"
   }

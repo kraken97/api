@@ -12,7 +12,7 @@
     "Newtonsoft.Json": "9.0.1",
     "System.Diagnostics.TraceSource": "4.0.0",
     "System.Net.Http": "4.1.0",
-    "Task3": "1.0.0",
+    "Task1": "1.0.0",
     "xunit": "2.1.0"
   },
 
