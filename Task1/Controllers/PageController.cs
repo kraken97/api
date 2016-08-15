@@ -17,7 +17,6 @@ namespace Task1.Controllers
   
     [Produces("application/json")]
     [Route("api/Page")]
-  
     public class PageApiController : Controller
     {
      

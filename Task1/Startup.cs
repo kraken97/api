@@ -82,23 +82,23 @@ namespace Task1
             else
             {
                 app.UseExceptionHandler("/Index/Error");
-            }
+            }   
 
             app.UseStaticFiles();
             app.UseIdentity();
 
 
-
+                //should use secret manager 
             app.UseFacebookAuthentication(new FacebookOptions()
             {
-                AppId = Configuration["Authentication:Facebook:AppId"],
-                AppSecret = Configuration["Authentication:Facebook:AppSecret"]
+                AppId = "628489387332140",
+                AppSecret = "1794886f2f68dc069ab0b4d4d00dc35f"
             });
-        //     app.UseGoogleAuthentication(
-        //         clientId: "000-000.apps.googleusercontent.com",
-        //  clientSecret: "00000000000");
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-
+            //should use secret manager 
+         app.UseGoogleAuthentication(new GoogleOptions {
+                ClientId = "154663659899-5lg38an5f234ji1atn30tpu9lfdp0d3k.apps.googleusercontent.com",
+                ClientSecret = "qrcw8qmJNzUOEp17r66zsFx1"
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(    
